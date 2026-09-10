@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dominio Expandido // Para Ivette</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gojo-blue:#3fd1ff;
+    --gojo-blue-deep:#0d6ea8;
+    --gojo-white:#f2f6fb;
+    --geto-violet:#8b3fd6;
+    --geto-violet-deep:#3a1256;
+    --geto-gold:#d9b25c;
+    --ink:#050308;
+    --paper:#0c0812;
+    --rose:#ff6fa3;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--gojo-white);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--rose);color:var(--ink);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+
+  /* ---------- background energy field ---------- */
+  #field{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    background:
+      radial-gradient(ellipse 60% 80% at 12% 50%, rgba(63,209,255,0.18), transparent 60%),
+      radial-gradient(ellipse 60% 80% at 88% 50%, rgba(139,63,214,0.20), transparent 60%),
+      linear-gradient(180deg, #05030a 0%, #0c0812 45%, #08050d 100%);
+  }
+  canvas#particles{position:fixed;inset:0;z-index:1;pointer-events:none;}
+
+  .seam{
+    position:fixed;
+    top:0; bottom:0; left:50%;
+    width:1px;
+    background:linear-gradient(180deg, transparent, rgba(255,255,255,0.15) 20%, rgba(255,255,255,0.15) 80%, transparent);
+    z-index:2;
+    transform:translateX(-50%);
+    pointer-events:none;
+  }
+
+  main{position:relative; z-index:3;}
+
+  section{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:6vh 6vw;
+    position:relative;
+  }
+
+  /* ---------- silhouettes ---------- */
+  .figure{
+    position:absolute;
+    bottom:0;
+    width:min(34vw, 420px);
+    opacity:0.9;
+    pointer-events:auto;
+    cursor:pointer;
+    transition:filter .5s ease, transform .5s ease;
+    filter:drop-shadow(0 0 25px rgba(0,0,0,0.4));
+  }
+  .figure.left{ left:clamp(0px, 2vw, 60px); }
+  .figure.right{ right:clamp(0px, 2vw, 60px); }
+  .figure svg{width:100%; display:block;}
+  .figure:hover{ transform:translateY(-8px); }
+  .figure.left:hover{ filter:drop-shadow(0 0 55px rgba(63,209,255,0.85)); }
+  .figure.right:hover{ filter:drop-shadow(0 0 55px rgba(139,63,214,0.85)); }
+
+  .eye{ transition:opacity .4s ease, filter .4s ease; }
+  .figure.left .eye{ fill:var(--gojo-blue); opacity:0.55; }
+  .figure.right .eye{ fill:var(--geto-gold); opacity:0.55; }
+  .figure.left:hover .eye{ opacity:1; filter:drop-shadow(0 0 12px var(--gojo-blue)); }
+  .figure.right:hover .eye{ opacity:1; filter:drop-shadow(0 0 12px var(--geto-gold)); }
+
+  .whisper{
+    position:absolute;
+    bottom:102%;
+    left:50%;
+    transform:translateX(-50%) translateY(6px);
+    width:max(220px, 90%);
+    text-align:center;
+    font-size:0.92rem;
+    letter-spacing:0.02em;
+    color:var(--gojo-white);
+    opacity:0;
+    transition:opacity .4s ease, transform .4s ease;
+    pointer-events:none;
+    font-style:italic;
+  }
+  .figure:hover .whisper{ opacity:0.95; transform:translateX(-50%) translateY(0); }
+
+  /* ---------- hero ---------- */
+  .hero-inner{
+    position:relative;
+    z-index:4;
+    text-align:center;
+    max-width:720px;
+  }
+  .kicker{
+    font-family:'Shippori Mincho', serif;
+    font-size:0.95rem;
+    letter-spacing:0.35em;
+    color:var(--geto-gold);
+    margin:0 0 1.2rem;
+  }
+  h1.title{
+    font-family:'Cinzel', serif;
+    font-weight:900;
+    font-size:clamp(2.6rem, 7vw, 5rem);
+    line-height:1.05;
+    margin:0 0 0.6rem;
+    background:linear-gradient(100deg, var(--gojo-blue) 0%, var(--gojo-white) 35%, var(--geto-gold) 65%, var(--geto-violet) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .subtitle{
+    font-size:clamp(1rem, 2vw, 1.25rem);
+    color:rgba(242,246,251,0.75);
+    max-width:520px;
+    margin:0 auto 2.4rem;
+    line-height:1.6;
+  }
+  .subtitle b{color:var(--gojo-white); font-weight:700;}
+
+  .scroll-hint{
+    margin-top:3rem;
+    font-size:0.8rem;
+    letter-spacing:0.25em;
+    color:rgba(242,246,251,0.4);
+    animation:bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+
+  /* ---------- domain expansion section ---------- */
+  .domain-label{
+    font-family:'Shippori Mincho', serif;
+    letter-spacing:0.3em;
+    font-size:0.85rem;
+    color:var(--gojo-blue);
+    margin-bottom:1rem;
+  }
+  h2.domain-title{
+    font-family:'Cinzel', serif;
+    font-size:clamp(1.8rem, 4vw, 2.8rem);
+    margin:0 0 2.5rem;
+    text-align:center;
+    color:var(--gojo-white);
+  }
+
+  .barrier{
+    position:relative;
+    width:min(560px, 90vw);
+    aspect-ratio:1/1;
+    max-height:56vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .barrier svg.ring{
+    position:absolute; inset:0; width:100%; height:100%;
+    animation:spin 40s linear infinite;
+  }
+  .barrier svg.ring.inner{ animation:spin 26s linear infinite reverse; opacity:0.6; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .message-core{
+    position:relative;
+    z-index:2;
+    width:78%;
+    text-align:center;
+    padding:1.5rem;
+  }
+  #message-text{
+    font-family:'Shippori Mincho', serif;
+    font-size:clamp(1.1rem, 2.6vw, 1.55rem);
+    line-height:1.65;
+    color:var(--gojo-white);
+    min-height:6.5em;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-shadow:0 0 18px rgba(63,209,255,0.25);
+  }
+
+  .invoke-btn{
+    margin-top:1.5rem;
+    background:linear-gradient(120deg, var(--gojo-blue-deep), var(--geto-violet-deep));
+    border:1px solid rgba(255,255,255,0.25);
+    color:var(--gojo-white);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-weight:700;
+    letter-spacing:0.08em;
+    padding:0.85rem 2rem;
+    border-radius:999px;
+    cursor:pointer;
+    font-size:0.95rem;
+    transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .invoke-btn:hover{
+    transform:translateY(-2px) scale(1.03);
+    box-shadow:0 0 30px rgba(63,209,255,0.35), 0 0 30px rgba(139,63,214,0.25);
+    border-color:rgba(255,255,255,0.5);
+  }
+  .invoke-btn:active{ transform:translateY(0) scale(0.98); }
+  .invoke-btn:focus-visible{ outline:2px solid var(--gojo-blue); outline-offset:3px; }
+
+  .counter{
+    margin-top:0.9rem;
+    font-size:0.78rem;
+    letter-spacing:0.15em;
+    color:rgba(242,246,251,0.4);
+  }
+
+  /* ---------- closing ---------- */
+  .closing-card{
+    max-width:600px;
+    text-align:center;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:18px;
+    padding:clamp(2rem, 5vw, 3.5rem);
+    background:linear-gradient(160deg, rgba(63,209,255,0.06), rgba(139,63,214,0.08));
+    backdrop-filter:blur(6px);
+  }
+  .closing-card h3{
+    font-family:'Cinzel', serif;
+    font-size:clamp(1.4rem, 3vw, 2rem);
+    margin:0 0 1.2rem;
+    color:var(--geto-gold);
+  }
+  .closing-card p{
+    font-size:1.05rem;
+    line-height:1.75;
+    color:rgba(242,246,251,0.88);
+    margin:0 0 0.5rem;
+  }
+  .signature{
+    margin-top:1.8rem;
+    font-family:'Shippori Mincho', serif;
+    font-style:italic;
+    color:var(--gojo-blue);
+    font-size:0.95rem;
+  }
+
+  footer{
+    text-align:center;
+    padding:2.5rem 1rem 3.5rem;
+    font-size:0.75rem;
+    letter-spacing:0.15em;
+    color:rgba(242,246,251,0.3);
+    position:relative;
+    z-index:3;
+  }
+
+  @media (max-width:720px){
+    .figure{ width:38vw; opacity:0.55; }
+    .whisper{ display:none; }
+    .seam{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="field"></div>
+<canvas id="particles"></canvas>
+<div class="seam"></div>
+
+<main>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="figure left" tabindex="0" aria-label="Presencia de energía azul, pelo blanco y venda sobre los ojos">
+      <svg viewBox="0 0 200 560" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="gLeft" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1c2430"/>
+            <stop offset="100%" stop-color="#0a0d14"/>
+          </linearGradient>
+        </defs>
+        <!-- uniforme: chaqueta recta de cuello alto -->
+        <path d="M100 96 C66 100 46 124 46 152 L40 296 C40 320 40 420 46 560 L154 560 C160 420 160 320 160 296 L154 152 C154 124 134 100 100 96 Z" fill="url(#gLeft)" stroke="#3fd1ff" stroke-opacity="0.28"/>
+        <!-- solapa central -->
+        <path d="M100 108 L100 420" stroke="#3fd1ff" stroke-opacity="0.15" stroke-width="1.5"/>
+        <circle cx="100" cy="150" r="3" fill="#d9b25c" opacity="0.6"/>
+        <!-- cuello alto cerrado -->
+        <path d="M80 104 C80 96 88 90 100 90 C112 90 120 96 120 104 L120 118 C120 130 80 130 80 118 Z" fill="#12161e" stroke="#3fd1ff" stroke-opacity="0.3"/>
+        <!-- rostro -->
+        <path d="M58 78 C54 46 76 18 100 18 C124 18 146 46 142 78 C145 100 134 122 100 124 C66 122 55 100 58 78 Z" fill="#0e1826" stroke="#3fd1ff" stroke-opacity="0.35"/>
+        <!-- pelo blanco despeinado -->
+        <path d="M52 66 C40 50 46 20 62 10 C58 24 64 30 70 20 C72 8 88 -4 100 4 C104 -6 122 -6 126 6 C136 -2 150 8 146 22 C154 16 160 34 150 46 C158 46 160 64 148 72 C150 54 136 40 122 44 C126 30 112 20 100 26 C90 18 76 26 78 40 C64 34 52 46 56 62 Z" fill="#f2f6fb" stroke="#3fd1ff" stroke-opacity="0.25"/>
+        <!-- venda cruzando los ojos -->
+        <rect x="52" y="66" width="96" height="17" rx="6" fill="#0a1420" stroke="#3fd1ff" stroke-width="1" stroke-opacity="0.5" transform="rotate(-2 100 74)"/>
+        <circle class="eye" cx="78" cy="74" r="3.2"/>
+        <circle class="eye" cx="122" cy="74" r="3.2"/>
+        <!-- sonrisa ladeada -->
+        <path d="M84 106 Q100 114 116 104" fill="none" stroke="#3fd1ff" stroke-opacity="0.4" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <div class="whisper">tu sonrisa desestabiliza cualquier técnica de control</div>
+    </div>
+
+    <div class="figure right" tabindex="0" aria-label="Presencia de energía violeta, moño alto y sonrisa afilada">
+      <svg viewBox="0 0 200 560" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="gRight" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#211c2c"/>
+            <stop offset="100%" stop-color="#0a0714"/>
+          </linearGradient>
+        </defs>
+        <!-- uniforme: mismo corte de cuello alto -->
+        <path d="M100 96 C66 100 46 124 46 152 L40 296 C40 320 40 420 46 560 L154 560 C160 420 160 320 160 296 L154 152 C154 124 134 100 100 96 Z" fill="url(#gRight)" stroke="#8b3fd6" stroke-opacity="0.3"/>
+        <path d="M100 108 L100 420" stroke="#8b3fd6" stroke-opacity="0.15" stroke-width="1.5"/>
+        <circle cx="100" cy="150" r="3" fill="#d9b25c" opacity="0.6"/>
+        <!-- cuello alto cerrado -->
+        <path d="M80 104 C80 96 88 90 100 90 C112 90 120 96 120 104 L120 118 C120 130 80 130 80 118 Z" fill="#160f1e" stroke="#8b3fd6" stroke-opacity="0.3"/>
+        <!-- rostro -->
+        <path d="M56 76 C52 44 74 16 100 16 C126 16 148 44 144 76 C147 98 136 120 100 122 C64 120 53 98 56 76 Z" fill="#160a20" stroke="#8b3fd6" stroke-opacity="0.4"/>
+        <!-- flequillo liso -->
+        <path d="M56 66 C50 36 70 12 100 12 C130 12 150 36 144 66 C138 48 120 34 100 34 C80 34 62 48 56 66 Z" fill="#1c0f28" stroke="#8b3fd6" stroke-opacity="0.3"/>
+        <!-- moño alto sobre la cabeza -->
+        <ellipse cx="100" cy="-6" rx="20" ry="16" fill="#1c0f28" stroke="#8b3fd6" stroke-opacity="0.3"/>
+        <path d="M84 6 C90 -8 110 -8 116 6" fill="none" stroke="#8b3fd6" stroke-opacity="0.25" stroke-width="2"/>
+        <!-- mechón suelto -->
+        <path d="M132 20 C140 34 138 52 128 60" fill="none" stroke="#1c0f28" stroke-width="3" stroke-linecap="round"/>
+        <!-- ojos afilados hacia arriba -->
+        <path d="M68 74 L86 70 L86 76 Z" fill="#d9b25c" opacity="0.85"/>
+        <path d="M132 74 L114 70 L114 76 Z" fill="#d9b25c" opacity="0.85"/>
+        <circle class="eye" cx="80" cy="73" r="3"/>
+        <circle class="eye" cx="120" cy="73" r="3"/>
+        <!-- sonrisa filosa -->
+        <path d="M82 108 Q100 118 118 106 Q100 112 82 108 Z" fill="#d9b25c" opacity="0.6"/>
+      </svg>
+      <div class="whisper">hasta las maldiciones envidiarían lo bien que me caes</div>
+    </div>
+
+    <div class="hero-inner">
+      <p class="kicker">呪術廻戦 · UNA PÁGINA CON TÉCNICA MALDITA</p>
+      <h1 class="title">Para Ivette</h1>
+      <p class="subtitle">Entre energía azul infinita y energía violeta prohibida, hay un espacio que solo tú ocupas. <b>Esto es un pequeño dominio, hecho solo para ti.</b></p>
+      <div class="scroll-hint">baja para activar el dominio ↓</div>
+    </div>
+  </section>
+
+  <!-- DOMAIN EXPANSION -->
+  <section id="domain">
+    <p class="domain-label">頸城賦活領域</p>
+    <h2 class="domain-title">Dominio Expandido</h2>
+
+    <div class="barrier">
+      <svg class="ring" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="200" cy="200" r="185" fill="none" stroke="url(#ringGrad)" stroke-width="1.5" stroke-dasharray="4 10"/>
+        <defs>
+          <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#3fd1ff"/>
+            <stop offset="100%" stop-color="#8b3fd6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <svg class="ring inner" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="200" cy="200" r="140" fill="none" stroke="#d9b25c" stroke-opacity="0.5" stroke-width="1" stroke-dasharray="1 6"/>
+      </svg>
+
+      <div class="message-core">
+        <div id="message-text">Toca el botón y deja que el dominio revele lo que pienso de ti.</div>
+        <button class="invoke-btn" id="invoke" type="button">Activar técnica</button>
+        <div class="counter" id="counter" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section id="closing">
+    <div class="closing-card">
+      <h3>Sukuna en persona lo firmaría</h3>
+      <p>No hace falta un dominio de 200% para saber que contigo todo es más fácil, más divertido y bastante más bonito.</p>
+      <p>Ojalá esta paginita, hecha con cariño y un poquito de código maldito, te saque aunque sea una sonrisa.</p>
+      <p class="signature">— con energía ilimitada por ti</p>
+    </div>
+  </section>
+
+  <footer>HECHO CON TODO MI CARIÑO · PARA TI </footer>
+
+</main>
+
+<script>
+(function(){
+  // ---------- floating particles ----------
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function makeParticles(n){
+    const arr = [];
+    for(let i=0;i<n;i++){
+      const side = Math.random() < 0.5 ? 'blue' : 'violet';
+      arr.push({
+        x: Math.random()*w,
+        y: Math.random()*h,
+        r: Math.random()*1.8 + 0.4,
+        vy: -(Math.random()*0.35 + 0.08),
+        vx: (Math.random()-0.5)*0.15,
+        alpha: Math.random()*0.5 + 0.15,
+        color: side === 'blue' ? '63,209,255' : '139,63,214'
+      });
+    }
+    return arr;
+  }
+  particles = makeParticles(reduceMotion ? 0 : 90);
+
+  function tick(){
+    ctx.clearRect(0,0,w,h);
+    particles.forEach(p=>{
+      p.y += p.vy;
+      p.x += p.vx;
+      if(p.y < -10){ p.y = h+10; p.x = Math.random()*w; }
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(${p.color},${p.alpha})`;
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+    });
+    if(!reduceMotion) requestAnimationFrame(tick);
+  }
+  tick();
+
+  // ---------- domain expansion messages ----------
+  const messages = [
+    "Si esto fuera un dominio expandido de verdad, el efecto garantizado sería que nunca dejas de gustarme.",
+    "Gojo tiene los Seis Ojos, pero ni con eso ve a alguien tan especial como tú.",
+    "Geto cambió de bando por poder ilimitado; yo ni lo pensaría por un mensaje tuyo.",
+    "No sé de técnicas malditas, pero sé que cada vez que hablamos algo en mí se ilumina.",
+    "Puede que no tenga energía maldita, pero contigo cerca todo se siente un poco más fuerte.",
+    "Entre lo azul y lo violeta, tú eres el color que realmente me gusta.",
+    "Si existieran los grados de maldición, tú serías especial grado sin discusión.",
+    "No necesito un dominio de barrera para que quieras quedarte cerca... aunque no estaría mal."
+  ];
+
+  const btn = document.getElementById('invoke');
+  const textEl = document.getElementById('message-text');
+  const counterEl = document.getElementById('counter');
+  let order = [];
+  let idx = 0;
+  let uses = 0;
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+  order = shuffle(messages);
+
+  function showMessage(){
+    if(idx >= order.length){
+      order = shuffle(messages);
+      idx = 0;
+    }
+    const msg = order[idx++];
+    uses++;
+    textEl.style.opacity = 0;
+    textEl.style.transform = 'scale(0.96)';
+    textEl.style.transition = 'opacity .35s ease, transform .35s ease';
+    setTimeout(()=>{
+      textEl.textContent = msg;
+      textEl.style.opacity = 1;
+      textEl.style.transform = 'scale(1)';
+    }, 260);
+    counterEl.textContent = `TÉCNICA N.º ${String(uses).padStart(2,'0')}`;
+    btn.textContent = uses === 1 ? 'Otra técnica más' : 'Activar de nuevo';
+  }
+
+  btn.addEventListener('click', showMessage);
+})();
+</script>
+
+</body>
+</html>
