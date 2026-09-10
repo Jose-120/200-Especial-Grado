@@ -68,50 +68,6 @@
     position:relative;
   }
 
-  /* ---------- silhouettes ---------- */
-  /* sized off viewport HEIGHT (not width) so the tall figure never
-     gets its head pushed above the fold on wide/short screens */
-  .figure{
-    position:absolute;
-    bottom:0;
-    height:min(62vh, 480px);
-    width:min(32vw, 172px);
-    opacity:0.9;
-    pointer-events:auto;
-    cursor:pointer;
-    transition:filter .5s ease, transform .5s ease;
-    filter:drop-shadow(0 0 25px rgba(0,0,0,0.4));
-  }
-  .figure.left{ left:clamp(0px, 2vw, 60px); }
-  .figure.right{ right:clamp(0px, 2vw, 60px); }
-  .figure svg{height:100%; width:100%; display:block;}
-  .figure:hover{ transform:translateY(-8px); }
-  .figure.left:hover{ filter:drop-shadow(0 0 55px rgba(63,209,255,0.85)); }
-  .figure.right:hover{ filter:drop-shadow(0 0 55px rgba(139,63,214,0.85)); }
-
-  .eye{ transition:opacity .4s ease, filter .4s ease; }
-  .figure.left .eye{ fill:var(--gojo-blue); opacity:0.55; }
-  .figure.right .eye{ fill:var(--geto-gold); opacity:0.55; }
-  .figure.left:hover .eye{ opacity:1; filter:drop-shadow(0 0 12px var(--gojo-blue)); }
-  .figure.right:hover .eye{ opacity:1; filter:drop-shadow(0 0 12px var(--geto-gold)); }
-
-  .whisper{
-    position:absolute;
-    bottom:102%;
-    left:50%;
-    transform:translateX(-50%) translateY(6px);
-    width:max(220px, 90%);
-    text-align:center;
-    font-size:0.92rem;
-    letter-spacing:0.02em;
-    color:var(--gojo-white);
-    opacity:0;
-    transition:opacity .4s ease, transform .4s ease;
-    pointer-events:none;
-    font-style:italic;
-  }
-  .figure:hover .whisper{ opacity:0.95; transform:translateX(-50%) translateY(0); }
-
   /* ---------- hero ---------- */
   .hero-inner{
     position:relative;
@@ -276,13 +232,7 @@
   }
 
   @media (max-width:720px){
-    .figure{ height:min(38vh, 280px); width:min(26vw, 100px); opacity:0.4; }
-    .whisper{ display:none; }
     .seam{ display:none; }
-  }
-
-  @media (max-height:640px){
-    .figure{ height:min(50vh, 260px); }
   }
 </style>
 </head>
@@ -296,69 +246,6 @@
 
   <!-- HERO -->
   <section id="hero">
-    <div class="figure left" tabindex="0" aria-label="Presencia de energía azul, pelo blanco y venda sobre los ojos">
-      <svg viewBox="0 0 200 560" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="gLeft" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#1c2430"/>
-            <stop offset="100%" stop-color="#0a0d14"/>
-          </linearGradient>
-        </defs>
-        <!-- uniforme: chaqueta recta de cuello alto -->
-        <path d="M100 96 C66 100 46 124 46 152 L40 296 C40 320 40 420 46 560 L154 560 C160 420 160 320 160 296 L154 152 C154 124 134 100 100 96 Z" fill="url(#gLeft)" stroke="#3fd1ff" stroke-opacity="0.28"/>
-        <!-- solapa central -->
-        <path d="M100 108 L100 420" stroke="#3fd1ff" stroke-opacity="0.15" stroke-width="1.5"/>
-        <circle cx="100" cy="150" r="3" fill="#d9b25c" opacity="0.6"/>
-        <!-- cuello alto cerrado -->
-        <path d="M80 104 C80 96 88 90 100 90 C112 90 120 96 120 104 L120 118 C120 130 80 130 80 118 Z" fill="#12161e" stroke="#3fd1ff" stroke-opacity="0.3"/>
-        <!-- rostro -->
-        <path d="M58 78 C54 46 76 18 100 18 C124 18 146 46 142 78 C145 100 134 122 100 124 C66 122 55 100 58 78 Z" fill="#0e1826" stroke="#3fd1ff" stroke-opacity="0.35"/>
-        <!-- pelo blanco despeinado -->
-        <path d="M52 66 C40 50 46 20 62 10 C58 24 64 30 70 20 C72 8 88 -4 100 4 C104 -6 122 -6 126 6 C136 -2 150 8 146 22 C154 16 160 34 150 46 C158 46 160 64 148 72 C150 54 136 40 122 44 C126 30 112 20 100 26 C90 18 76 26 78 40 C64 34 52 46 56 62 Z" fill="#f2f6fb" stroke="#3fd1ff" stroke-opacity="0.25"/>
-        <!-- venda cruzando los ojos -->
-        <rect x="52" y="66" width="96" height="17" rx="6" fill="#0a1420" stroke="#3fd1ff" stroke-width="1" stroke-opacity="0.5" transform="rotate(-2 100 74)"/>
-        <circle class="eye" cx="78" cy="74" r="3.2"/>
-        <circle class="eye" cx="122" cy="74" r="3.2"/>
-        <!-- sonrisa ladeada -->
-        <path d="M84 106 Q100 114 116 104" fill="none" stroke="#3fd1ff" stroke-opacity="0.4" stroke-width="1.6" stroke-linecap="round"/>
-      </svg>
-      <div class="whisper">tu sonrisa desestabiliza cualquier técnica de control</div>
-    </div>
-
-    <div class="figure right" tabindex="0" aria-label="Presencia de energía violeta, moño alto y sonrisa afilada">
-      <svg viewBox="0 0 200 560" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="gRight" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#211c2c"/>
-            <stop offset="100%" stop-color="#0a0714"/>
-          </linearGradient>
-        </defs>
-        <!-- uniforme: mismo corte de cuello alto -->
-        <path d="M100 96 C66 100 46 124 46 152 L40 296 C40 320 40 420 46 560 L154 560 C160 420 160 320 160 296 L154 152 C154 124 134 100 100 96 Z" fill="url(#gRight)" stroke="#8b3fd6" stroke-opacity="0.3"/>
-        <path d="M100 108 L100 420" stroke="#8b3fd6" stroke-opacity="0.15" stroke-width="1.5"/>
-        <circle cx="100" cy="150" r="3" fill="#d9b25c" opacity="0.6"/>
-        <!-- cuello alto cerrado -->
-        <path d="M80 104 C80 96 88 90 100 90 C112 90 120 96 120 104 L120 118 C120 130 80 130 80 118 Z" fill="#160f1e" stroke="#8b3fd6" stroke-opacity="0.3"/>
-        <!-- rostro -->
-        <path d="M56 76 C52 44 74 16 100 16 C126 16 148 44 144 76 C147 98 136 120 100 122 C64 120 53 98 56 76 Z" fill="#160a20" stroke="#8b3fd6" stroke-opacity="0.4"/>
-        <!-- flequillo liso -->
-        <path d="M56 66 C50 36 70 12 100 12 C130 12 150 36 144 66 C138 48 120 34 100 34 C80 34 62 48 56 66 Z" fill="#1c0f28" stroke="#8b3fd6" stroke-opacity="0.3"/>
-        <!-- moño alto sobre la cabeza -->
-        <ellipse cx="100" cy="-6" rx="20" ry="16" fill="#1c0f28" stroke="#8b3fd6" stroke-opacity="0.3"/>
-        <path d="M84 6 C90 -8 110 -8 116 6" fill="none" stroke="#8b3fd6" stroke-opacity="0.25" stroke-width="2"/>
-        <!-- mechón suelto -->
-        <path d="M132 20 C140 34 138 52 128 60" fill="none" stroke="#1c0f28" stroke-width="3" stroke-linecap="round"/>
-        <!-- ojos afilados hacia arriba -->
-        <path d="M68 74 L86 70 L86 76 Z" fill="#d9b25c" opacity="0.85"/>
-        <path d="M132 74 L114 70 L114 76 Z" fill="#d9b25c" opacity="0.85"/>
-        <circle class="eye" cx="80" cy="73" r="3"/>
-        <circle class="eye" cx="120" cy="73" r="3"/>
-        <!-- sonrisa filosa -->
-        <path d="M82 108 Q100 118 118 106 Q100 112 82 108 Z" fill="#d9b25c" opacity="0.6"/>
-      </svg>
-      <div class="whisper">hasta las maldiciones envidiarían lo bien que me caes</div>
-    </div>
-
     <div class="hero-inner">
       <p class="kicker">呪術廻戦 · UNA PÁGINA CON TÉCNICA MALDITA</p>
       <h1 class="title">Para Ivette</h1>
