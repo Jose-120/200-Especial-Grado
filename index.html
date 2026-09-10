@@ -69,10 +69,13 @@
   }
 
   /* ---------- silhouettes ---------- */
+  /* sized off viewport HEIGHT (not width) so the tall figure never
+     gets its head pushed above the fold on wide/short screens */
   .figure{
     position:absolute;
     bottom:0;
-    width:min(34vw, 420px);
+    height:min(62vh, 480px);
+    width:min(32vw, 172px);
     opacity:0.9;
     pointer-events:auto;
     cursor:pointer;
@@ -81,7 +84,7 @@
   }
   .figure.left{ left:clamp(0px, 2vw, 60px); }
   .figure.right{ right:clamp(0px, 2vw, 60px); }
-  .figure svg{width:100%; display:block;}
+  .figure svg{height:100%; width:100%; display:block;}
   .figure:hover{ transform:translateY(-8px); }
   .figure.left:hover{ filter:drop-shadow(0 0 55px rgba(63,209,255,0.85)); }
   .figure.right:hover{ filter:drop-shadow(0 0 55px rgba(139,63,214,0.85)); }
@@ -273,9 +276,13 @@
   }
 
   @media (max-width:720px){
-    .figure{ width:38vw; opacity:0.55; }
+    .figure{ height:min(38vh, 280px); width:min(26vw, 100px); opacity:0.4; }
     .whisper{ display:none; }
     .seam{ display:none; }
+  }
+
+  @media (max-height:640px){
+    .figure{ height:min(50vh, 260px); }
   }
 </style>
 </head>
@@ -397,7 +404,7 @@
     </div>
   </section>
 
-  <footer>HECHO CON TODO MI CARIÑO · PARA TI </footer>
+  <footer>HECHO CON CURSED ENERGY Y CARIÑO · PARA IVETTE</footer>
 
 </main>
 
